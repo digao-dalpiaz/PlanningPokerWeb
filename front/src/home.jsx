@@ -56,8 +56,7 @@ export default function Home() {
 
   async function go() {
     const xNome = nome.trim();
-    let xIdSala = idSala.trim();
-    let token = null;
+    const xIdSala = idSala.trim();
 
     if (!xNome) {
       toast.warn('Especifique seu nome');
