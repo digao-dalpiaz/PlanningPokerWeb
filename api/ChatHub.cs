@@ -56,7 +56,6 @@ namespace api
         public class Posicao
         {
             public bool EmVotacao { get; set; }
-            public bool IsAdmin { get; set; }
             public List<PosicaoUser> Users { get; set; }
         }
         public class PosicaoUser
@@ -72,9 +71,6 @@ namespace api
         {
             var users = sala.GetCopiaListaUsers();
 
-            var posicao = new Posicao();
-            posicao.EmVotacao = sala.EmVotacao;
-
             var listaUsers = users.Select(x => new PosicaoUser
             {
                 Uuid = x.Uuid,
@@ -87,7 +83,9 @@ namespace api
 
             if (!sala.EmVotacao) listaUsers = listaUsers.OrderBy(x => x.Voto);
 
+            var posicao = new Posicao();
             posicao.Users = listaUsers.ToList();
+            posicao.EmVotacao = sala.EmVotacao;
                 
             var conexoes = users.Where(x => !x.Desconectado).Select(x => x.IdConexao);
             await Clients.Clients(conexoes).SendAsync("Posicao", posicao);
