@@ -62,7 +62,7 @@ export function Sala() {
   function buildTela(inner) {
     return (
       <Container>
-        <i className="fa-solid fa-layer-group" /> Sala: {cred?.idSala} <br />
+        {cred.idSala && <><i className="fa-solid fa-layer-group" /> Sala: <a href={'/#/?idSala=' + cred.idSala}>{cred.idSala}</a><br /></>}
         <div style={{ height: 10 }} />
         {inner}
       </Container>

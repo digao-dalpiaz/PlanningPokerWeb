@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { Container, Button, Form, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { api } from "./request";
 
 const MODO_JOIN = 'J';
 
 export default function Home() {
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [modo, setModo] = useState(MODO_JOIN);
   const [nome, setNome] = useState('');
-  const [idSala, setIdSala] = useState('');
-
-  const navigate = useNavigate();
+  const [idSala, setIdSala] = useState(new URLSearchParams(location.search).get('idSala') ?? '');
 
   return (
     <>
