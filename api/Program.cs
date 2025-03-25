@@ -35,7 +35,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+//app.UseHttpsRedirection(); -- não redirecionar HTTPS pois usamos dentro do container
 
 app.UseAuthorization();
 
