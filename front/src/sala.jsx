@@ -115,7 +115,7 @@ export function Sala() {
         <tbody>
           {posicao.users.map(x =>
             <tr key={x.uuid} className={x.uuid === infoUser.uuid ? 'table-warning' : ''}>
-              <td><i className="fa-solid fa-user" /> {x.nome} {x.admin && <Badge>ADMIN</Badge>} {x.desconectado && <i className="fa-solid fa-ban" />}</td>
+              <td><i className="fa-solid fa-user" /> {x.nome} {x.admin && <Badge>ADMIN</Badge>} {!x.conectado && <i className="fa-solid fa-ban" />}</td>
               <td>
                 {x.votou ?
                   <span className="text-success"><i className="fa-solid fa-thumbs-up" /> Votou</span>
