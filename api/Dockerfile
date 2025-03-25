@@ -2,15 +2,15 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 # Definindo o diretório de trabalho
-WORKDIR /app
+WORKDIR /src
 
 # Copiando o arquivo .csproj e restaurando dependências
-COPY *.csproj ./
+COPY *.csproj .
 RUN dotnet restore
 
 # Copiando o restante dos arquivos e construindo a aplicação
-COPY . ./
-RUN dotnet publish -c Release -o /app/publish
+COPY . .
+RUN dotnet publish -c Release -o /src/publish
 
 # Etapa 2: Execução
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
@@ -19,7 +19,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
 # Copiando os arquivos publicados da etapa anterior
-COPY --from=build /app/publish .
+COPY --from=build /src/publish .
 
 # Expondo a porta que o aplicativo vai rodar
 EXPOSE 8080
