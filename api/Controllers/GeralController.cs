@@ -15,10 +15,18 @@ namespace api.Controllers
             return Global.VERSAO;
         }
 
-        [HttpGet("salas")]
-        public int GetSalas()
+        public class MapSalasRequest
         {
-            return Global.Salas.Count;
+            public string Token { get; set; }
+        }
+        [HttpPost("mapsalas")]
+        public List<Sala> GetSalas(MapSalasRequest request)
+        {
+            string token = Environment.GetEnvironmentVariable("TOKEN");
+            if (token == null) throw new Exception("Token não inicializado");
+            if (request.Token != token) throw new Exception("Token inválido");
+
+            return Global.Salas.Select(x => x.Value).ToList();
         }
 
         public static string GenerateToken(int length = 32)
