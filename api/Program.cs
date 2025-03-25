@@ -2,8 +2,6 @@ using api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.WebHost.UseUrls("https://0.0.0.0:8080");
-
 // Add services to the container.
 
 builder.Services.AddControllers();
