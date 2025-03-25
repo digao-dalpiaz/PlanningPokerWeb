@@ -9,6 +9,12 @@ namespace api.Controllers
     public class GeralController() : ControllerBase
     {
 
+        [HttpGet("versao")]
+        public string GetVersao()
+        {
+            return Global.VERSAO;
+        }
+
         [HttpGet("salas")]
         public int GetSalas()
         {

@@ -6,6 +6,8 @@ namespace api
     public class Global
     {
 
+        public const string VERSAO = "1.1";
+
         public static readonly ConcurrentDictionary<string, Sala> Salas = new();
 
         public static Sala FindSalaById(string idSala)
