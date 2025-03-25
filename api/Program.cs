@@ -14,7 +14,7 @@ builder.Services.AddSignalR(options =>
     options.EnableDetailedErrors = true;
 });
 
-if (builder.Environment.IsDevelopment())
+//if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddCors(options =>
     {
@@ -37,7 +37,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
