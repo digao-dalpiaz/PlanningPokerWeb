@@ -19,9 +19,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy("CorsPolicy", p =>
     {
         p.AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials()
-            .SetIsOriginAllowed(origin => builder.Environment.IsDevelopment() ? true : 
+         .AllowAnyHeader()
+         .AllowCredentials()
+         .SetIsOriginAllowed(origin => builder.Environment.IsDevelopment() ? true : 
             origin.Equals("https://poker.digaodalpiaz.com", StringComparison.InvariantCultureIgnoreCase));
     });
 });
