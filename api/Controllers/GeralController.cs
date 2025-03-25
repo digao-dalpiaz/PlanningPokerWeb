@@ -78,7 +78,7 @@ namespace api.Controllers
                 user.Nome = request.Nome;
                 user.Token = GenerateToken();
                 user.Admin = request.IdSala == null;
-                user.Desconectado = true; //criar desconectado
+                user.Conectado = false; //criar desconectado
 
                 sala.AddUser(user);
 

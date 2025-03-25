@@ -34,7 +34,7 @@
         private void TimerCallback(object state)
         {
             bool temUsuarioConectado;
-            lock (_users) temUsuarioConectado = _users.Any(x => !x.Desconectado);
+            lock (_users) temUsuarioConectado = _users.Any(x => x.Conectado);
 
             if (!temUsuarioConectado && _ultimoUso.AddMinutes(2) < DateTime.Now)
             {
@@ -70,7 +70,7 @@
         {
             lock (_users)
             {
-                _users.RemoveAll(x => x.Desconectado);
+                _users.RemoveAll(x => !x.Conectado);
                 _users.ForEach(x => x.Voto = null);
             }
         }

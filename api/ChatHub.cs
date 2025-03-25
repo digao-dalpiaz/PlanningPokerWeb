@@ -27,7 +27,7 @@ namespace api
             if (dadosUser == null) throw new Exception("Usuário não encontrado pelo token");
             
             dadosUser.IdConexao = Context.ConnectionId;
-            dadosUser.Desconectado = false;
+            dadosUser.Conectado = true;
 
             Context.Items[DATA_IDENT] = dadosUser;
 
@@ -45,7 +45,7 @@ namespace api
             var dadosUsuario = GetByContext();
             if (dadosUsuario != null)
             {
-                dadosUsuario.Desconectado = true;
+                dadosUsuario.Conectado = false;
 
                 await MandarParaTodosSala(dadosUsuario.Sala);
             }
@@ -65,7 +65,7 @@ namespace api
             public int? Voto { get; set; }
             public bool Votou { get; set; }
             public bool Admin { get; set; }
-            public bool Desconectado { get; set; }
+            public bool Conectado { get; set; }
         }
         private async Task MandarParaTodosSala(Sala sala)
         {
@@ -78,7 +78,7 @@ namespace api
                 Votou = x.Voto != null,
                 Voto = sala.EmVotacao ? null : x.Voto,
                 Admin = x.Admin,
-                Desconectado = x.Desconectado
+                Conectado = x.Conectado
             }).OrderBy(x => x.Nome);
 
             if (!sala.EmVotacao) listaUsers = listaUsers.OrderBy(x => x.Voto);
@@ -87,7 +87,7 @@ namespace api
             posicao.Users = listaUsers.ToList();
             posicao.EmVotacao = sala.EmVotacao;
                 
-            var conexoes = users.Where(x => !x.Desconectado).Select(x => x.IdConexao);
+            var conexoes = users.Where(x => x.Conectado).Select(x => x.IdConexao);
             await Clients.Clients(conexoes).SendAsync("Posicao", posicao);
 
             sala.AtualizarTimestamp();

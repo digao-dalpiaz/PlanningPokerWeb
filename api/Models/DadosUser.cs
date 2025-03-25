@@ -16,6 +16,6 @@ namespace api.Models
 
         public int? Voto { get; set; }
 
-        public bool Desconectado { get; set; }
+        public bool Conectado { get; set; }
     }
 }
