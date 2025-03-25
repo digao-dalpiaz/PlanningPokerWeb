@@ -24,7 +24,7 @@ namespace api.Controllers
         {
             string token = Environment.GetEnvironmentVariable("TOKEN");
             if (token == null) throw new Exception("Token não inicializado");
-            if (request.Token != token) throw new Exception("Token inválido");
+            if (request.Token != token) throw new BadHttpRequestException("Token inválido");
 
             return Global.Salas.Select(x => x.Value).ToList();
         }
