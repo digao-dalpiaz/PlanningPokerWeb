@@ -14,19 +14,17 @@ builder.Services.AddSignalR(options =>
     options.EnableDetailedErrors = true;
 });
 
-//if (builder.Environment.IsDevelopment())
+builder.Services.AddCors(options =>
 {
-    builder.Services.AddCors(options =>
+    options.AddPolicy("CorsPolicy", p =>
     {
-        options.AddPolicy("CorsPolicy", builder =>
-        {
-            builder.AllowAnyMethod()
-                   .AllowAnyHeader()
-                   .AllowCredentials()
-                   .SetIsOriginAllowed(origin => true);
-        });
+        p.AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .SetIsOriginAllowed(origin => builder.Environment.IsDevelopment() ? true : 
+            origin.Equals("https://poker.digaodalpiaz.com", StringComparison.InvariantCultureIgnoreCase));
     });
-}
+});
 
 var app = builder.Build();
 
@@ -37,7 +35,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
