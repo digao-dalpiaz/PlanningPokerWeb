@@ -6,7 +6,7 @@ namespace api
     public class Global
     {
 
-        public const string VERSAO = "1.1";
+        public const string VERSAO = "1.2";
 
         public static readonly ConcurrentDictionary<string, Sala> Salas = new();
 

@@ -69,7 +69,7 @@ namespace api
         }
         private async Task MandarParaTodosSala(Sala sala)
         {
-            var users = sala.GetCopiaListaUsers();
+            var users = sala.Users; //thread safe
 
             var listaUsers = users.Select(x => new PosicaoUser
             {

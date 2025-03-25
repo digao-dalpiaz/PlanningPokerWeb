@@ -58,8 +58,6 @@ namespace api.Controllers
             if (request.IdSala == null)
             {
                 sala = new();
-                sala.Id = Guid.NewGuid().ToString();
-                sala.Users = [];
                 if (!Global.Salas.TryAdd(sala.Id, sala))
                 {
                     throw new Exception("Criada sala que já existia");

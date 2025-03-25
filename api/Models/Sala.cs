@@ -2,33 +2,26 @@
 {
     public class Sala
     {
-        private const int INTERVALO = 1000 * 60 * 10; //5 minutos
+        private const int INTERVALO = 1000 * 60 * 1; //1 minuto
 
-        private DateTime _ultimoUso;
+        private readonly List<DadosUser> _users;
         private readonly Timer _timer;
 
         private readonly object _tsLock = new();
+        private DateTime _ultimoUso;
 
         public Sala()
         {
+            Id = Guid.NewGuid().ToString();
+            _users = [];
             _ultimoUso = DateTime.Now;
             _timer = new(TimerCallback, null, INTERVALO, INTERVALO);
         }
 
-        public string Id { get; set; }
-        public List<DadosUser> Users { get; set; }
+        public string Id { get; }
         public bool EmVotacao { get; set; }
-
-        private void TimerCallback(object state)
-        {
-            int qtdUsers;
-            lock (Users) qtdUsers = Users.Count;
-
-            if (qtdUsers == 0 && _ultimoUso.AddMinutes(5) < DateTime.Now)
-            {
-                Global.Salas.TryRemove(Id, out _);
-            }
-        }
+        public List<DadosUser> Users { get { lock(_users) return _users.ToList(); } }
+        public DateTime UltimoUso { get => _ultimoUso; }
 
         public void AtualizarTimestamp()
         {
@@ -38,44 +31,47 @@
             }
         }
 
-        public DadosUser FindUserByToken(string token)
+        private void TimerCallback(object state)
         {
-            lock (Users)
+            int qtdUsers;
+            lock (_users) qtdUsers = _users.Count;
+
+            if (qtdUsers == 0 && _ultimoUso.AddMinutes(2) < DateTime.Now)
             {
-                return Users.FirstOrDefault(x => x.Token == token);
+                Global.Salas.TryRemove(Id, out _);
             }
         }
 
-        public List<DadosUser> GetCopiaListaUsers()
+        public DadosUser FindUserByToken(string token)
         {
-            lock (Users)
+            lock (_users)
             {
-                return Users.ToList();
+                return _users.FirstOrDefault(x => x.Token == token);
             }
         }
 
         public void AddUser(DadosUser user)
         {
-            lock (Users)
+            lock (_users)
             {
-                Users.Add(user);
+                _users.Add(user);
             }
         }
 
         public void RemoveUser(DadosUser user)
         {
-            lock (Users)
+            lock (_users)
             {
-                Users.Remove(user);
+                _users.Remove(user);
             }
         }
 
         public void RemoverDesconectadosAndClearVotos()
         {
-            lock (Users)
+            lock (_users)
             {
-                Users.RemoveAll(x => x.Desconectado);
-                Users.ForEach(x => x.Voto = null);
+                _users.RemoveAll(x => x.Desconectado);
+                _users.ForEach(x => x.Voto = null);
             }
         }
 
