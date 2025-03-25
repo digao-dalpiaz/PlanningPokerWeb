@@ -1,23 +1,28 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 8080
-#EXPOSE 443
-
-# Build Stage
+# Etapa 1: Construção
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
 
-# Copia o arquivo de solução e restaura as dependências
-COPY ["api.csproj", "./"]
-RUN dotnet restore "api.csproj"
-
-# Copia o restante do código e compila
-COPY . .
-RUN dotnet publish "api.csproj" -c Release -o /app/publish --no-restore
-
-# Runtime Stage
-FROM base AS final
+# Definindo o diretório de trabalho
 WORKDIR /app
+
+# Copiando o arquivo .csproj e restaurando dependências
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copiando o restante dos arquivos e construindo a aplicação
+COPY . ./
+RUN dotnet publish -c Release -o /app/publish
+
+# Etapa 2: Execução
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+
+# Definindo o diretório de trabalho para o contêiner final
+WORKDIR /app
+
+# Copiando os arquivos publicados da etapa anterior
 COPY --from=build /app/publish .
 
+# Expondo a porta que o aplicativo vai rodar
+EXPOSE 8080
+
+# Definindo o comando para rodar a API
 ENTRYPOINT ["dotnet", "api.dll"]
