@@ -62,7 +62,8 @@ export function Sala() {
   function buildTela(inner) {
     return (
       <Container>
-        {cred.idSala && <><i className="fa-solid fa-layer-group" /> Sala: {cred.idSala} <Button onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button><br /></>}
+        {cred.idSala && <><i className="fa-solid fa-layer-group" /> Sala: {cred.idSala}
+          &nbsp;<Button size="sm" variant="light" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button><br /></>}
         <div style={{ height: 10 }} />
         {inner}
       </Container>
