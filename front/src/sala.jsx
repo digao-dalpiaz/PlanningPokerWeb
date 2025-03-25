@@ -62,7 +62,7 @@ export function Sala() {
   function buildTela(inner) {
     return (
       <Container>
-        {cred.idSala && <><i className="fa-solid fa-layer-group" /> Sala: <a href={'/#/?idSala=' + cred.idSala}>{cred.idSala}</a><br /></>}
+        {cred.idSala && <><i className="fa-solid fa-layer-group" /> Sala: {cred.idSala} <Button onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button><br /></>}
         <div style={{ height: 10 }} />
         {inner}
       </Container>
@@ -170,6 +170,11 @@ export function Sala() {
     let soma = 0;
     numeros.forEach(x => soma += x);
     return soma / numeros.length;
+  }
+
+  async function shareSala() {
+    await navigator.clipboard.writeText(window.location.origin + '/#/?idSala=' + cred.idSala);
+    toast.info('Link copiado para a área de transferência');
   }
 
 }
