@@ -33,10 +33,10 @@
 
         private void TimerCallback(object state)
         {
-            int qtdUsers;
-            lock (_users) qtdUsers = _users.Count;
+            bool temUsuarioConectado;
+            lock (_users) temUsuarioConectado = _users.Any(x => !x.Desconectado);
 
-            if (qtdUsers == 0 && _ultimoUso.AddMinutes(2) < DateTime.Now)
+            if (!temUsuarioConectado && _ultimoUso.AddMinutes(2) < DateTime.Now)
             {
                 Global.Salas.TryRemove(Id, out _);
             }
