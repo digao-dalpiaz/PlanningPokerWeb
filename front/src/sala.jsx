@@ -3,7 +3,7 @@ import { useLocation } from "react-router";
 import * as signalR from "@microsoft/signalr";
 import { Alert, Badge, Button, Card, Col, Form, Row, Spinner, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
-import { URL_BACKEND } from "./definicoes";
+import { IS_DEV_MODE, URL_BACKEND } from "./definicoes";
 
 export function Sala() {
 
@@ -16,8 +16,14 @@ export function Sala() {
   const [voto, setVoto] = useState('');
 
   const conRef = useRef();
+  const firstRun = useRef();
 
   useEffect(() => {
+    if (IS_DEV_MODE && !firstRun.current) {
+      firstRun.current = true;
+      return;
+    } 
+
     if (cred)
       conectar();
 
@@ -33,20 +39,32 @@ export function Sala() {
       .withAutomaticReconnect()
       .build();
 
+    con.onreconnecting(() => toast.warn('Reconectando com o servidor...'));
+    con.onreconnected(() => toast.info('Reconectado com sucesso!'));
+    con.onclose(() => toast.error('Desconectado do servidor'));
+
     con.on("Posicao", posicao => setPosicao(posicao));
 
     conRef.current = con;
 
     try {
       await con.start();
-      setInfoUser(await call('Entrar', cred.idSala, cred.token));
     }
     catch (err) {
-      setErroConexao(err.message);
+      setErroConexao(/*err.message*/ 'Não foi possível se conectar ao servidor');
       return;
     }
 
-    setErroConexao(null);
+    let data;
+    try {
+      data = await con.invoke('Entrar', cred.idSala, cred.token);
+    } catch (err) {
+      con.stop();
+      setErroConexao(getSignalRException(err));
+      return;
+    }
+
+    setInfoUser(data);
   }
 
   async function call(method, ...args) {
@@ -54,15 +72,23 @@ export function Sala() {
       if (conRef.current.state !== 'Connected') throw new Error('Conexão foi perdida com o servidor');
       return await conRef.current.invoke(method, ...args);
     } catch (err) {
-      toast.error(err.message);
+      toast.error(getSignalRException(err));
       throw err;
     }
   };
 
+  function getSignalRException(err) {
+    const msg = err.message;
+    const ident = 'Exception: ';
+    const x = msg.indexOf(ident);
+    if (x !== -1) return msg.substring(x + ident.length);
+    return msg;
+  }
+
   function buildTela(inner) {
     return (
       <>
-        {cred.idSala && <><i className="fa-solid fa-layer-group" /> Sala: {cred.idSala}
+        {cred?.idSala && <><i className="fa-solid fa-layer-group" /> Sala: {cred.idSala}
           &nbsp;<Button size="sm" variant="light" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button><br /></>}
         <div style={{ height: 10 }} />
         {inner}
