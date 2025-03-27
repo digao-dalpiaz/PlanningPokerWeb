@@ -168,7 +168,7 @@ export function Sala() {
           </Card.Body>
         </Card>
 
-        <Table striped>
+        <Table striped hover>
           <thead>
             <tr>
               <th width="55%">Nome</th>
