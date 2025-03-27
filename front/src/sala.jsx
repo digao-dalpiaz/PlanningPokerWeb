@@ -1,17 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import * as signalR from "@microsoft/signalr";
-import { Alert, Badge, Button, Card, Col, Form, Row, Spinner, Table } from "react-bootstrap";
+import { Badge, Button, Card, Col, Form, Row, Spinner, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { IS_DEV_MODE, URL_BACKEND } from "./definicoes";
+
+const STATUS_DESCONECTADO = 'D';
+const STATUS_CONECTADO = 'C';
+const STATUS_CONECTANDO = '.';
 
 export function Sala() {
 
   const location = useLocation();
   const cred = location.state;
 
+  const [statusCon, setStatusCon] = useState(STATUS_DESCONECTADO);
   const [infoUser, setInfoUser] = useState();
-  const [erroConexao, setErroConexao] = useState();
   const [posicao, setPosicao] = useState();
   const [voto, setVoto] = useState('');
 
@@ -22,10 +26,9 @@ export function Sala() {
     if (IS_DEV_MODE && !firstRun.current) {
       firstRun.current = true;
       return;
-    } 
+    }
 
-    if (cred)
-      conectar();
+    conectar(); //promisse
 
     return () => {
       conRef.current?.stop();
@@ -34,33 +37,57 @@ export function Sala() {
   }, []);
 
   async function conectar() {
+    if (!cred) {
+      toast.error('Credenciais não informadas');
+      return;
+    }
+
     const con = new signalR.HubConnectionBuilder()
       .withUrl(URL_BACKEND + '/chatHub')
       .withAutomaticReconnect()
       .build();
 
-    con.onreconnecting(() => toast.warn('Reconectando com o servidor...'));
-    con.onreconnected(() => toast.info('Reconectado com sucesso!'));
-    con.onclose(() => toast.error('Desconectado do servidor'));
+    con.onreconnecting(() => {
+      setStatusCon(STATUS_CONECTANDO);
+      toast.warn('Reconectando com o servidor...');
+    });
+    con.onreconnected(() => {
+      setStatusCon(STATUS_CONECTADO);
+      toast.info('Reconectado com sucesso!');
 
-    con.on("Posicao", posicao => setPosicao(posicao));
+      obterInforUser(); //promisse
+    });
+    con.onclose(() => {
+      setStatusCon(STATUS_DESCONECTADO);
+      toast.error('Desconectado do servidor');
+    });
+
+    con.on('Posicao', data => setPosicao(data));
 
     conRef.current = con;
 
+    setStatusCon(STATUS_CONECTANDO);
     try {
       await con.start();
     }
     catch (err) {
-      setErroConexao(/*err.message*/ 'Não foi possível se conectar ao servidor');
+      setStatusCon(STATUS_DESCONECTADO);
+      toast.error(/*err.message*/ 'Não foi possível se conectar ao servidor');
       return;
     }
 
+    setStatusCon(STATUS_CONECTADO);
+
+    obterInforUser(); //promisse
+  }
+
+  async function obterInforUser() {
     let data;
+
     try {
-      data = await con.invoke('Entrar', cred.idSala, cred.token);
+      data = await call('Entrar', cred.idSala, cred.token);
     } catch (err) {
-      con.stop();
-      setErroConexao(getSignalRException(err));
+      conRef.current.stop();
       return;
     }
 
@@ -85,80 +112,92 @@ export function Sala() {
     return msg;
   }
 
-  function buildTela(inner) {
-    return (
-      <>
-        {cred?.idSala && <><i className="fa-solid fa-layer-group" /> Sala: {cred.idSala}
-          &nbsp;<Button size="sm" variant="light" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button><br /></>}
-        <div style={{ height: 10 }} />
-        {inner}
-      </>
-    );
-  }
-
-  if (!cred) return buildTela(<Alert variant="warning">Credenciais não foram informadas</Alert>);
-  if (erroConexao) return buildTela(<Alert variant="danger"><b>Erro de conexão:</b> {erroConexao}</Alert>);
-  if (!posicao || !infoUser) return buildTela(<h3 className="text-info"><Spinner /> Conectando...</h3>);
-
-  return buildTela(
+  return (
     <>
-      <Card hidden={!infoUser.admin} style={{ marginBottom: 10 }}>
-        <Card.Header><i className="fa-solid fa-shield-halved" /> Administração</Card.Header>
-        <Card.Body>
-          <Button onClick={definirStatusSala}>{posicao.emVotacao ?
-            <><i className="fa-solid fa-stop" /> Encerrar votação</>
-            :
-            <><i className="fa-solid fa-play" /> Iniciar votação</>}</Button>
-        </Card.Body>
-      </Card>
-
-      <Card style={{ backgroundColor: posicao.emVotacao ? '#b1e0f3' : '' }}>
-        <Card.Header><i className="fa-solid fa-head-side-virus" /> Voto {posicao.emVotacao ? <span> :: <b>VOTAÇÃO EM ANDAMENTO</b></span> : null}</Card.Header>
-        <Card.Body>
-
-          <Row>
-            <Col>
-              <Form.Control type="number" min="0" value={voto} onChange={ev => setVoto(ev.target.value)} />
-            </Col>
-            <Col>
-              <Button onClick={votar} variant="success" disabled={!posicao.emVotacao}>Votar</Button>
-              &nbsp;&nbsp;&nbsp;
-              <Button onClick={abster} variant="danger" disabled={!posicao.emVotacao}>Abster</Button>
-            </Col>
-          </Row>
-
-        </Card.Body>
-      </Card>
-
-      <Table striped>
-        <thead>
-          <tr>
-            <th width="55%">Nome</th>
-            <th width="25%">Status</th>
-            <th>Voto</th>
-          </tr>
-        </thead>
+      <table width="100%">
         <tbody>
-          {posicao.users.map(x =>
-            <tr key={x.uuid} className={x.uuid === infoUser.uuid ? 'table-warning' : ''}>
-              <td><i className="fa-solid fa-user" /> {x.nome} {x.admin && <Badge>ADMIN</Badge>} {!x.conectado && <i className="fa-solid fa-ban" />}</td>
-              <td>
-                {x.votou ?
-                  <span className="text-success"><i className="fa-solid fa-thumbs-up" /> Votou</span>
+          <tr>
+            <td>
+              <i className="fa-solid fa-layer-group" /> Sala: {cred?.idSala}
+              &nbsp;<Button size="sm" variant="light" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button>
+            </td>
+            <td align="right">
+              {statusCon === STATUS_DESCONECTADO ?
+                <span className="text-secondary"><i className="fa-solid fa-ban" /> Desconectado</span>
+                : statusCon === STATUS_CONECTADO ?
+                  <span className="text-success"><i className="fa-solid fa-wifi" /> Conectado</span>
                   :
-                  (posicao.emVotacao ?
-                    <span className="text-secondary"><i className="fa-solid fa-hourglass-start" /> Esperando</span>
-                    :
-                    <span className="text-danger"><i className="fa-solid fa-circle-exclamation" /> Não votou</span>)}
-              </td>
-              <td className="text-end">{x.voto === 0 ? <><i className="fa-solid fa-hands" /> Absteve</> : x.voto}</td>
-            </tr>)}
+                  <span className="text-warning"><i className="fa-solid fa-spinner" /> Conectando...</span>}
+            </td>
+          </tr>
         </tbody>
-      </Table>
+      </table>
 
-      {!posicao.emVotacao && getSumario()}
+      {infoUser && posicao && getCard()}
     </>
   )
+
+  function getCard() {
+    return (
+      <>
+        <Card hidden={!infoUser.admin} style={{ marginBottom: 10 }}>
+          <Card.Header><i className="fa-solid fa-shield-halved" /> Administração</Card.Header>
+          <Card.Body>
+            <Button onClick={definirStatusSala}>{posicao.emVotacao ?
+              <><i className="fa-solid fa-stop" /> Encerrar votação</>
+              :
+              <><i className="fa-solid fa-play" /> Iniciar votação</>}</Button>
+          </Card.Body>
+        </Card>
+
+        <Card style={{ backgroundColor: posicao.emVotacao ? '#b1e0f3' : '' }}>
+          <Card.Header><i className="fa-solid fa-head-side-virus" /> Voto {posicao.emVotacao ? <span> :: <b>VOTAÇÃO EM ANDAMENTO</b></span> : null}</Card.Header>
+          <Card.Body>
+
+            <Row>
+              <Col>
+                <Form.Control type="number" min="0" value={voto} onChange={ev => setVoto(ev.target.value)} />
+              </Col>
+              <Col>
+                <Button onClick={votar} variant="success" disabled={!posicao.emVotacao}>Votar</Button>
+                &nbsp;&nbsp;&nbsp;
+                <Button onClick={abster} variant="danger" disabled={!posicao.emVotacao}>Abster</Button>
+              </Col>
+            </Row>
+
+          </Card.Body>
+        </Card>
+
+        <Table striped>
+          <thead>
+            <tr>
+              <th width="55%">Nome</th>
+              <th width="25%">Status</th>
+              <th>Voto</th>
+            </tr>
+          </thead>
+          <tbody>
+            {posicao.users.map(x =>
+              <tr key={x.uuid} className={x.uuid === infoUser.uuid ? 'table-warning' : ''}>
+                <td><i className="fa-solid fa-user" /> {x.nome} {x.admin && <Badge>ADMIN</Badge>} {!x.conectado && <i className="fa-solid fa-ban" />}</td>
+                <td>
+                  {x.votou ?
+                    <span className="text-success"><i className="fa-solid fa-thumbs-up" /> Votou</span>
+                    :
+                    (posicao.emVotacao ?
+                      <span className="text-secondary"><i className="fa-solid fa-hourglass-start" /> Esperando</span>
+                      :
+                      <span className="text-danger"><i className="fa-solid fa-circle-exclamation" /> Não votou</span>)}
+                </td>
+                <td className="text-end">{x.voto === 0 ? <><i className="fa-solid fa-hands" /> Absteve</> : x.voto}</td>
+              </tr>)}
+          </tbody>
+        </Table>
+
+        {!posicao.emVotacao && getSumario()}
+      </>
+    )
+  }
 
   async function votar() {
     if (!voto) {

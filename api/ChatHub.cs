@@ -8,9 +8,11 @@ namespace api
 
         private const string DATA_IDENT = "DATA";
 
-        private DadosUser GetByContext()
+        private DadosUser GetByContext(bool obrigatorio = true)
         {
-            return Context.Items[DATA_IDENT] as DadosUser;
+            var user = Context.Items[DATA_IDENT] as DadosUser;
+            if (obrigatorio && user == null) throw new Exception("Usuário não encontrado");
+            return user;
         }
 
         public class InfoUser
@@ -42,7 +44,7 @@ namespace api
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            var dadosUsuario = GetByContext();
+            var dadosUsuario = GetByContext(obrigatorio: false);
             if (dadosUsuario != null)
             {
                 dadosUsuario.Conectado = false;
