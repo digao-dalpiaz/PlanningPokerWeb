@@ -107,8 +107,8 @@ export function Sala() {
       <Table striped>
         <thead>
           <tr>
-            <th>Nome</th>
-            <th>Status</th>
+            <th width="60%">Nome</th>
+            <th width="25%">Status</th>
             <th>Voto</th>
           </tr>
         </thead>
