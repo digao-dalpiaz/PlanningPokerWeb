@@ -18,6 +18,7 @@ api.interceptors.response.use(
       switch (error.status) {
         case 422:
           msg = error.response.data;
+          break;
         case 500:
           msg = 'Erro: ' + error.response.data;
           break;
