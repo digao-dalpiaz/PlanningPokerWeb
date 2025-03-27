@@ -49,17 +49,17 @@ export function Sala() {
 
     con.onreconnecting(() => {
       setStatusCon(STATUS_CONECTANDO);
-      toast.warn('Reconectando com o servidor...');
+      //toast.warn('Reconectando com o servidor...');
     });
     con.onreconnected(() => {
       setStatusCon(STATUS_CONECTADO);
-      toast.info('Reconectado com sucesso!');
+      //toast.info('Reconectado com sucesso!');
 
       obterInforUser(); //promisse
     });
     con.onclose(() => {
       setStatusCon(STATUS_DESCONECTADO);
-      toast.error('Desconectado do servidor');
+      //toast.error('Desconectado do servidor');
     });
 
     con.on('Posicao', data => setPosicao(data));
@@ -118,8 +118,11 @@ export function Sala() {
         <tbody>
           <tr>
             <td>
-              <i className="fa-solid fa-layer-group" /> Sala: {cred?.idSala}
-              &nbsp;<Button size="sm" variant="light" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button>
+              {cred &&
+                <>
+                  <i className="fa-solid fa-layer-group" /> Sala: {cred.idSala}
+                  &nbsp;<Button size="sm" variant="light" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button>
+                </>}
             </td>
             <td align="right">
               {statusCon === STATUS_DESCONECTADO ?
