@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, Button, Form, Card } from "react-bootstrap";
+import { Button, Form, Card, InputGroup } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router";
 import { api } from "./request";
@@ -10,6 +10,8 @@ export default function Home() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [entrando, setEntrando] = useState(false);
 
   const [modo, setModo] = useState(MODO_JOIN);
   const [nome, setNome] = useState('');
@@ -22,30 +24,39 @@ export default function Home() {
         <Card.Body>
 
           <span>Seu nome</span>
-          <Form.Control value={nome} onChange={ev => setNome(ev.target.value)} />
+          <InputGroup>
+            <InputGroup.Text><i className="fa-solid fa-user" /></InputGroup.Text>
+            <Form.Control value={nome} onChange={ev => setNome(ev.target.value)} />
+          </InputGroup>
 
           <div style={{ height: 10 }} />
 
           <span>Modo</span>
-          <Form.Control as="select"
-            value={modo}
-            onChange={ev => setModo(ev.target.value)}
-          >
-            <option value="N">Criar nova sala</option>
-            <option value="J">Entrar em sala existente</option>
-          </Form.Control>
+          <InputGroup>
+            <InputGroup.Text><i className="fa-solid fa-sliders" /></InputGroup.Text>
+            <Form.Control as="select"
+              value={modo}
+              onChange={ev => setModo(ev.target.value)}
+            >
+              <option value="N">Criar nova sala</option>
+              <option value="J">Entrar em sala existente</option>
+            </Form.Control>
+          </InputGroup>
 
           {modo === MODO_JOIN &&
             <>
               <div style={{ height: 10 }} />
 
               <span>Código da sala</span>
-              <Form.Control value={idSala} onChange={ev => setIdSala(ev.target.value)} />
+              <InputGroup>
+                <InputGroup.Text><i className="fa-solid fa-hashtag" /></InputGroup.Text>
+                <Form.Control value={idSala} onChange={ev => setIdSala(ev.target.value)} />
+              </InputGroup>
             </>}
 
           <div style={{ height: 20 }} />
 
-          <Button onClick={go}><i className="fa-solid fa-right-to-bracket" /> Entrar</Button>
+          <Button disabled={entrando} onClick={go}><i className="fa-solid fa-right-to-bracket" /> Entrar</Button>
 
         </Card.Body>
       </Card>
@@ -80,10 +91,17 @@ export default function Home() {
 
     //
 
-    const dadosIngresso = (await api.post('geral/ingressar', {
-      nome: xNome,
-      idSala: modo === MODO_JOIN ? xIdSala : null
-    })).data;
+    let dadosIngresso;
+
+    setEntrando(true);
+    try {
+      dadosIngresso = (await api.post('geral/ingressar', {
+        nome: xNome,
+        idSala: modo === MODO_JOIN ? xIdSala : null
+      })).data;
+    } finally {
+      setEntrando(false);
+    }
 
     if (dadosIngresso.idSala === null) {
       toast.warn('Sala não existe');

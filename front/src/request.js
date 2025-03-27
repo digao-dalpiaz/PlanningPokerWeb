@@ -12,12 +12,18 @@ api.interceptors.response.use(
   },
   error => {
     let msg;
-    switch (error.status) {
-      case 500:
-        msg = 'Erro: ' + error.response.data;
-        break;
-      default:
-        msg = `Erro ${error.status}: ${error.message}`;
+    if (error.code === 'ERR_NETWORK') {
+      msg = 'Não foi possível se comunicar com o servidor'
+    } else {
+      switch (error.status) {
+        case 422:
+          msg = error.response.data;
+        case 500:
+          msg = 'Erro: ' + error.response.data;
+          break;
+        default:
+          msg = 'Erro ' + (error.status ? '#' + error.status : error.code) + ': ' + error.message;
+      }
     }
     toast.error(msg);
     return Promise.reject(error);
