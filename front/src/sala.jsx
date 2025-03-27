@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router";
 import * as signalR from "@microsoft/signalr";
-import { Badge, Button, Card, Col, Form, Row, Spinner, Table } from "react-bootstrap";
+import { Badge, Button, Card, Col, Form, Row, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { IS_DEV_MODE, URL_BACKEND } from "./definicoes";
 
@@ -114,7 +114,7 @@ export function Sala() {
 
   return (
     <>
-      <table width="100%">
+      <table width="100%" style={{ marginBottom: 10 }}>
         <tbody>
           <tr>
             <td>
