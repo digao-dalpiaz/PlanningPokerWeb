@@ -1,4 +1,5 @@
 using api;
+using api.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,7 +23,7 @@ builder.Services.AddCors(options =>
          .AllowAnyHeader()
          .AllowCredentials()
          .SetIsOriginAllowed(origin => builder.Environment.IsDevelopment() ? true : 
-            origin.Equals("https://poker.digaodalpiaz.com", StringComparison.InvariantCultureIgnoreCase));
+            origin.Equals(Global.URL_FRONTEND, StringComparison.InvariantCultureIgnoreCase));
     });
 });
 
@@ -43,5 +44,7 @@ app.MapControllers();
 
 app.UseCors("CorsPolicy");
 app.MapHub<ChatHub>("/chatHub");
+
+ExceptionHandler.ConfigurarExceptionHandler(app);
 
 app.Run();

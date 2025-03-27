@@ -17,41 +17,38 @@ export default function Home() {
 
   return (
     <>
-      <Container>
-        <Card>
-          <Card.Header>Criar ou juntar-se a uma sala</Card.Header>
-          <Card.Body>
+      <Card>
+        <Card.Header>Criar ou juntar-se a uma sala</Card.Header>
+        <Card.Body>
 
-            <span>Seu nome</span>
-            <Form.Control value={nome} onChange={ev => setNome(ev.target.value)} />
+          <span>Seu nome</span>
+          <Form.Control value={nome} onChange={ev => setNome(ev.target.value)} />
 
-            <div style={{ height: 10 }} />
+          <div style={{ height: 10 }} />
 
-            <span>Modo</span>
-            <Form.Control as="select"
-              value={modo}
-              onChange={ev => setModo(ev.target.value)}
-            >
-              <option value="N">Criar nova sala</option>
-              <option value="J">Entrar em sala existente</option>
-            </Form.Control>
+          <span>Modo</span>
+          <Form.Control as="select"
+            value={modo}
+            onChange={ev => setModo(ev.target.value)}
+          >
+            <option value="N">Criar nova sala</option>
+            <option value="J">Entrar em sala existente</option>
+          </Form.Control>
 
-            {modo === MODO_JOIN &&
-              <>
-                <div style={{ height: 10 }} />
+          {modo === MODO_JOIN &&
+            <>
+              <div style={{ height: 10 }} />
 
-                <span>Código da sala</span>
-                <Form.Control value={idSala} onChange={ev => setIdSala(ev.target.value)} />
-              </>}
+              <span>Código da sala</span>
+              <Form.Control value={idSala} onChange={ev => setIdSala(ev.target.value)} />
+            </>}
 
-            <div style={{ height: 20 }} />
+          <div style={{ height: 20 }} />
 
-            <Button onClick={go}><i className="fa-solid fa-right-to-bracket" /> Entrar</Button>
+          <Button onClick={go}><i className="fa-solid fa-right-to-bracket" /> Entrar</Button>
 
-          </Card.Body>
-        </Card>
-
-      </Container>
+        </Card.Body>
+      </Card>
     </>
   )
 

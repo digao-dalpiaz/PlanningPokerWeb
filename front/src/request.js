@@ -11,8 +11,15 @@ api.interceptors.response.use(
     return response;
   },
   error => {
-    //console.log(error);
-    toast.error(/*error.response?.data ??*/ error.message)
+    let msg;
+    switch (error.status) {
+      case 500:
+        msg = 'Erro: ' + error.response.data;
+        break;
+      default:
+        msg = `Erro ${error.status}: ${error.message}`;
+    }
+    toast.error(msg);
     return Promise.reject(error);
   }
 );

@@ -7,6 +7,7 @@ namespace api
     {
 
         public const string VERSAO = "1.2";
+        public const string URL_FRONTEND = "https://poker.digaodalpiaz.com";
 
         public static readonly ConcurrentDictionary<string, Sala> Salas = new();
 

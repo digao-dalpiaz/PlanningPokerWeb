@@ -1,4 +1,5 @@
-﻿using api.Models;
+﻿using api.Exceptions;
+using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 
@@ -20,11 +21,11 @@ namespace api.Controllers
             public string Token { get; set; }
         }
         [HttpPost("mapsalas")]
-        public ActionResult<List<Sala>> GetSalas(MapSalasRequest request)
+        public List<Sala> GetSalas(MapSalasRequest request)
         {
             string token = Environment.GetEnvironmentVariable("TOKEN");
             if (token == null) throw new Exception("Token não inicializado");
-            if (request.Token != token) return BadRequest("Token inválido");
+            if (request.Token != token) throw new ValidacaoException("Token inválido");
 
             return Global.Salas.Select(x => x.Value).ToList();
         }

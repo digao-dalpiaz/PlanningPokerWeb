@@ -61,12 +61,12 @@ export function Sala() {
 
   function buildTela(inner) {
     return (
-      <Container>
+      <>
         {cred.idSala && <><i className="fa-solid fa-layer-group" /> Sala: {cred.idSala}
           &nbsp;<Button size="sm" variant="light" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button><br /></>}
         <div style={{ height: 10 }} />
         {inner}
-      </Container>
+      </>
     );
   }
 
@@ -147,10 +147,13 @@ export function Sala() {
     }
 
     await call('Votar', parseInt(voto));
+    toast.info('Voto enviado: ' + voto);
+    setVoto('');
   }
 
   async function abster() {
     await call('Votar', 0);
+    toast.info('Abstenção enviada');
   }
 
   async function definirStatusSala() {
@@ -161,9 +164,9 @@ export function Sala() {
     const numeros = posicao.users.filter(x => x.voto > 0).map(x => x.voto);
 
     return (
-      <>
+      <div style={{ textAlign: 'right' }}>
         <b>Média:</b> {numeros.length > 0 ? calcularMedia(numeros).toFixed(1) : null} (Votos: {numeros.length})
-      </>
+      </div>
     )
   }
 
