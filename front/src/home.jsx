@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, Form, Card, InputGroup } from "react-bootstrap";
+import { Button, Form, Card, InputGroup, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router";
 import { api } from "./request";
@@ -57,6 +57,7 @@ export default function Home() {
           <div style={{ height: 20 }} />
 
           <Button disabled={entrando} onClick={go}><i className="fa-solid fa-right-to-bracket" /> Entrar</Button>
+          &nbsp;{entrando && <Spinner size="sm" />}
 
         </Card.Body>
       </Card>
