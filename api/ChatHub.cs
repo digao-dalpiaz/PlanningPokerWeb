@@ -1,4 +1,5 @@
-﻿using api.Models;
+﻿using api.Exceptions;
+using api.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace api
@@ -23,7 +24,7 @@ namespace api
         public async Task<InfoUser> Entrar(string idSala, string token)
         {
             var sala = Global.FindSalaById(idSala);
-            if (sala == null) throw new Exception("Sala não encontrada: " + idSala);
+            if (sala == null) throw new ValidacaoException("Sala não encontrada: " + idSala);
 
             var dadosUser = sala.FindUserByToken(token);
             if (dadosUser == null) throw new Exception("Usuário não encontrado pelo token");
@@ -99,7 +100,7 @@ namespace api
         {
             var dadosUsuario = GetByContext();
             var sala = dadosUsuario.Sala;
-            if (!sala.EmVotacao) throw new Exception("Não está em votação");
+            if (!sala.EmVotacao) throw new ValidacaoException("Não está em votação");
 
             dadosUsuario.Voto = voto;
 
