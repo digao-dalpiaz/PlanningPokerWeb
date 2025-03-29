@@ -2,7 +2,7 @@
 
 namespace api.Exceptions
 {
-    public class ExceptionHandler
+    public class ApiExceptionHandler
     {
         public static void ConfigurarExceptionHandler(WebApplication app)
         {

@@ -1,5 +1,6 @@
 using api;
 using api.Exceptions;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +13,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddSignalR(options =>
 {
-    options.EnableDetailedErrors = true;
+    //options.EnableDetailedErrors = true;
+    options.AddFilter<HubExceptionHandler>();
 });
 
 builder.Services.AddCors(options =>
@@ -45,6 +47,6 @@ app.MapControllers();
 app.UseCors("CorsPolicy");
 app.MapHub<ChatHub>("/chatHub");
 
-ExceptionHandler.ConfigurarExceptionHandler(app);
+ApiExceptionHandler.ConfigurarExceptionHandler(app);
 
 app.Run();
