@@ -87,7 +87,7 @@ namespace api.Controllers
                 response.Token = user.Token;
                 response.IdSala = sala.Id;
 
-                await DbService.Gravar(request.IdSala, request.Nome);
+                await DbService.Gravar(sala.Id, user.Nome);
             }
             
             return response;
