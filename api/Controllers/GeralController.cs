@@ -56,8 +56,10 @@ namespace api.Controllers
         [HttpPost("ingressar")]
         public async Task<ResponseIngresso> Ingressar(RequestIngresso request)
         {
+            bool modoCreate = request.IdSala == null;
+
             Sala sala;
-            if (request.IdSala == null)
+            if (modoCreate)
             {
                 sala = new();
                 if (!Global.Salas.TryAdd(sala.Id, sala))
@@ -79,7 +81,7 @@ namespace api.Controllers
                 user.Uuid = Guid.NewGuid();
                 user.Nome = request.Nome;
                 user.Token = GenerateToken();
-                user.Admin = request.IdSala == null;
+                user.Admin = modoCreate;
                 user.Conectado = false; //criar desconectado
 
                 sala.AddUser(user);
@@ -87,7 +89,7 @@ namespace api.Controllers
                 response.Token = user.Token;
                 response.IdSala = sala.Id;
 
-                await DbService.Gravar(HttpContext, sala.Id, user.Nome);
+                await DbService.Gravar(HttpContext, modoCreate, sala.Id, user.Nome);
             }
             
             return response;
