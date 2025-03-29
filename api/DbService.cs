@@ -10,6 +10,7 @@ namespace api
             var sb = new MySqlConnectionStringBuilder
             {
                 Server = Environment.GetEnvironmentVariable("DB_SERVER"),
+                Port = uint.Parse(Environment.GetEnvironmentVariable("DB_PORT")),
                 Database = Environment.GetEnvironmentVariable("DB_DATABASE"),
                 UserID = Environment.GetEnvironmentVariable("DB_USER"),
                 Password = Environment.GetEnvironmentVariable("DB_PASSWORD")
