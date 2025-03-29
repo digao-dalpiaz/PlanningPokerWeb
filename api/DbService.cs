@@ -5,18 +5,18 @@ namespace api
     public class DbService
     {
 
+        private readonly static string CONNECTION_STRING = new MySqlConnectionStringBuilder
+        {
+            Server = Environment.GetEnvironmentVariable("DB_SERVER"),
+            Port = uint.Parse(Environment.GetEnvironmentVariable("DB_PORT")),
+            Database = Environment.GetEnvironmentVariable("DB_DATABASE"),
+            UserID = Environment.GetEnvironmentVariable("DB_USER"),
+            Password = Environment.GetEnvironmentVariable("DB_PASSWORD")
+        }.ConnectionString;
+
         public async static Task Gravar(string sala, string nome)
         {
-            var sb = new MySqlConnectionStringBuilder
-            {
-                Server = Environment.GetEnvironmentVariable("DB_SERVER"),
-                Port = uint.Parse(Environment.GetEnvironmentVariable("DB_PORT")),
-                Database = Environment.GetEnvironmentVariable("DB_DATABASE"),
-                UserID = Environment.GetEnvironmentVariable("DB_USER"),
-                Password = Environment.GetEnvironmentVariable("DB_PASSWORD")
-            };
-
-            using var connection = new MySqlConnection(sb.ConnectionString);
+            using var connection = new MySqlConnection(CONNECTION_STRING);
             await connection.OpenAsync();
 
             using var command = connection.CreateCommand();
