@@ -20,8 +20,9 @@ namespace api
             await connection.OpenAsync();
 
             using var command = connection.CreateCommand();
-            command.CommandText = "insert into log (sala, nome) values (@sala, @nome)";
+            command.CommandText = "insert into log (data_hora, sala, nome) values (@dh, @sala, @nome)";
             
+            command.Parameters.Add(new MySqlParameter("@dh", DateTime.Now));
             command.Parameters.Add(new MySqlParameter("@sala", sala));
             command.Parameters.Add(new MySqlParameter("@nome", nome));
 
