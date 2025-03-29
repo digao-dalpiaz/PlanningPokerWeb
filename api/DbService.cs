@@ -5,14 +5,12 @@ namespace api
     public class DbService
     {
 
-        private readonly static MySqlConnectionStringBuilder CONN_BUILDER = new()
+        private readonly static string CONN_STRING;
+        static DbService()
         {
-            Server = Environment.GetEnvironmentVariable("DB_SERVER"),
-            Port = uint.Parse(Environment.GetEnvironmentVariable("DB_PORT")),
-            Database = Environment.GetEnvironmentVariable("DB_DATABASE"),
-            UserID = Environment.GetEnvironmentVariable("DB_USER"),
-            Password = Environment.GetEnvironmentVariable("DB_PASSWORD")
-        };
+            CONN_STRING = Environment.GetEnvironmentVariable("DB_STRING");
+            if (string.IsNullOrEmpty(CONN_STRING)) throw new Exception("Configuração de conexão do banco não definida");
+        }
 
         private static string GetIp(HttpContext context)
         {
@@ -22,7 +20,7 @@ namespace api
 
         public async static Task Gravar(HttpContext context, bool modoCreate, string sala, string nome)
         {
-            using var connection = new MySqlConnection(CONN_BUILDER.ConnectionString);
+            using var connection = new MySqlConnection(CONN_STRING);
             await connection.OpenAsync();
 
             using var command = connection.CreateCommand();
@@ -39,7 +37,7 @@ namespace api
 
         public async static Task GravarException(HttpContext context, Exception ex)
         {
-            using var connection = new MySqlConnection(CONN_BUILDER.ConnectionString);
+            using var connection = new MySqlConnection(CONN_STRING);
             await connection.OpenAsync();
 
             using var command = connection.CreateCommand();
