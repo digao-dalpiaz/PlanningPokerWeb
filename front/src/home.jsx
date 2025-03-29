@@ -26,7 +26,7 @@ export default function Home() {
           <span>Seu nome</span>
           <InputGroup>
             <InputGroup.Text><i className="fa-solid fa-user" /></InputGroup.Text>
-            <Form.Control value={nome} onChange={ev => setNome(ev.target.value)} />
+            <Form.Control value={nome} onChange={ev => setNome(ev.target.value)} maxLength="50" />
           </InputGroup>
 
           <div style={{ height: 10 }} />
