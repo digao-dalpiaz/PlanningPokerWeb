@@ -47,7 +47,7 @@ namespace api
 
             command.Parameters.Add(new MySqlParameter("@dh", DateTime.Now));
             command.Parameters.Add(new MySqlParameter("@ip", GetIp(context)));
-            command.Parameters.Add(new MySqlParameter("@ip", context.Connection.Id));
+            command.Parameters.Add(new MySqlParameter("@ident", context.Connection.Id));
             command.Parameters.Add(new MySqlParameter("@detalhes", ex.ToString()));
 
             await command.ExecuteNonQueryAsync();
