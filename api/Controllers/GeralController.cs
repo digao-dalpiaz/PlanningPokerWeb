@@ -2,6 +2,7 @@
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace api.Controllers
 {
@@ -53,7 +54,7 @@ namespace api.Controllers
             public string Token { get; set; }
         }
         [HttpPost("ingressar")]
-        public ResponseIngresso Ingressar(RequestIngresso request)
+        public async Task<ResponseIngresso> Ingressar(RequestIngresso request)
         {
             Sala sala;
             if (request.IdSala == null)
@@ -85,6 +86,8 @@ namespace api.Controllers
 
                 response.Token = user.Token;
                 response.IdSala = sala.Id;
+
+                await DbService.Gravar(request.IdSala, request.Nome);
             }
             
             return response;
