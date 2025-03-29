@@ -14,15 +14,16 @@ namespace api
             Password = Environment.GetEnvironmentVariable("DB_PASSWORD")
         };
 
-        public async static Task Gravar(string sala, string nome)
+        public async static Task Gravar(HttpRequest request, string sala, string nome)
         {
             using var connection = new MySqlConnection(CONN_BUILDER.ConnectionString);
             await connection.OpenAsync();
 
             using var command = connection.CreateCommand();
-            command.CommandText = "insert into log (data_hora, sala, nome) values (@dh, @sala, @nome)";
+            command.CommandText = "insert into log (data_hora, ip, sala, nome) values (@dh, @ip, @sala, @nome)";
             
             command.Parameters.Add(new MySqlParameter("@dh", DateTime.Now));
+            command.Parameters.Add(new MySqlParameter("@ip", request.Host.Value));
             command.Parameters.Add(new MySqlParameter("@sala", sala));
             command.Parameters.Add(new MySqlParameter("@nome", nome));
 
