@@ -22,6 +22,7 @@ namespace api.Exceptions
                     {
                         msg = "Erro inesperado na Api do servidor";
                         await DbService.GravarException(context, ex.Error);
+                        //por padrão retorna erro 500
                     }
                     
                     await context.Response.WriteAsync(msg);
