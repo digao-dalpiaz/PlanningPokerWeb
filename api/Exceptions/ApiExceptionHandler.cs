@@ -12,11 +12,19 @@ namespace api.Exceptions
                 {
                     var ex = context.Features.Get<IExceptionHandlerPathFeature>();
 
+                    string msg;
                     if (ex.Error is ValidacaoException)
                     {
+                        msg = ex.Error.Message;
                         context.Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
                     }
-                    await context.Response.WriteAsync(ex.Error.Message);
+                    else
+                    {
+                        msg = "Erro inesperado na Api do servidor";
+                        await DbService.GravarException(context, ex.Error);
+                    }
+                    
+                    await context.Response.WriteAsync(msg);
                 });
             });
         }

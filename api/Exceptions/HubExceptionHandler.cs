@@ -15,6 +15,7 @@ namespace api.Exceptions
             {
                 if (ex is ValidacaoException) throw new HubException(ex.Message);
 
+                await DbService.GravarException(invocationContext.Context.GetHttpContext(), ex);
                 throw new HubException("Erro inesperado no WebSocket do servidor");
             }
         }
