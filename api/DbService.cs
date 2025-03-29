@@ -16,6 +16,8 @@ namespace api
                 Password = Environment.GetEnvironmentVariable("DB_PASSWORD")
             };
 
+            Console.WriteLine(sb.ConnectionString);
+
             using var connection = new MySqlConnection(sb.ConnectionString);
             await connection.OpenAsync();
 
