@@ -2,7 +2,6 @@
 using api.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace api.Controllers
 {
