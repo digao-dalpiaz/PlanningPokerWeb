@@ -21,9 +21,11 @@ namespace api
 
             using var command = connection.CreateCommand();
             command.CommandText = "insert into log (data_hora, ip, sala, nome) values (@dh, @ip, @sala, @nome)";
-            
+
+            var trueIp = context.Request.Headers["X-Forwarded-For"];
+
             command.Parameters.Add(new MySqlParameter("@dh", DateTime.Now));
-            command.Parameters.Add(new MySqlParameter("@ip", context.Connection.RemoteIpAddress.ToString()));
+            command.Parameters.Add(new MySqlParameter("@ip", !string.IsNullOrEmpty(trueIp) ? trueIp : context.Connection.RemoteIpAddress?.ToString()));
             command.Parameters.Add(new MySqlParameter("@sala", sala));
             command.Parameters.Add(new MySqlParameter("@nome", nome));
 
