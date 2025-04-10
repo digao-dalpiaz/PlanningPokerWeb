@@ -4,6 +4,7 @@ import * as signalR from "@microsoft/signalr";
 import { Badge, Button, Card, Col, Form, Row, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { IS_DEV_MODE, URL_BACKEND } from "./definicoes";
+import { calcularMedia, calcularMediana, calcularModa } from "./utils";
 
 const STATUS_DESCONECTADO = 'D';
 const STATUS_CONECTADO = 'C';
@@ -245,15 +246,14 @@ export function Sala() {
 
     return (
       <div style={{ textAlign: 'right' }}>
-        <b>Média:</b> {numeros.length > 0 ? calcularMedia(numeros).toFixed(1) : null} (Votos: {numeros.length})
+        <b>Votos:</b> {numeros.length}
+        {numeros.length > 0 && <>&nbsp;&nbsp;&nbsp;
+          <b>Média:</b> {calcularMedia(numeros).toFixed(1)}&nbsp;&nbsp;&nbsp;
+          <b>Mediana:</b> {calcularMediana(numeros)}&nbsp;&nbsp;&nbsp;
+          <b>Moda:</b> {calcularModa(numeros)}
+        </>}
       </div>
     )
-  }
-
-  function calcularMedia(numeros) {
-    let soma = 0;
-    numeros.forEach(x => soma += x);
-    return soma / numeros.length;
   }
 
   async function shareSala() {
