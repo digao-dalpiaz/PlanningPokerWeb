@@ -5,9 +5,13 @@ namespace api
     public class DbService
     {
 
+        private readonly static bool DEV_MODE = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+
         private readonly static string CONN_STRING;
         static DbService()
         {
+            if (DEV_MODE) return;
+
             CONN_STRING = Environment.GetEnvironmentVariable("DB_STRING");
             if (string.IsNullOrEmpty(CONN_STRING)) throw new Exception("Configuração de conexão do banco não definida");
         }
@@ -20,6 +24,8 @@ namespace api
 
         public async static Task Gravar(HttpContext context, bool modoCreate, string sala, string nome)
         {
+            if (DEV_MODE) return;
+
             using var connection = new MySqlConnection(CONN_STRING);
             await connection.OpenAsync();
 
@@ -37,6 +43,8 @@ namespace api
 
         public async static Task GravarException(HttpContext context, Exception ex)
         {
+            if (DEV_MODE) return;
+
             using var connection = new MySqlConnection(CONN_STRING);
             await connection.OpenAsync();
 

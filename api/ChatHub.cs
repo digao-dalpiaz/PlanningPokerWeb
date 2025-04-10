@@ -66,6 +66,7 @@ namespace api
             public Guid Uuid { get; set; }
             public string Nome { get; set; }
             public int? Voto { get; set; }
+            public string Tamanho { get; set; }
             public bool Votou { get; set; }
             public bool Admin { get; set; }
             public bool Conectado { get; set; }
@@ -80,6 +81,7 @@ namespace api
                 Nome = x.Nome,
                 Votou = x.Voto != null,
                 Voto = sala.EmVotacao ? null : x.Voto,
+                Tamanho = sala.EmVotacao ? null : x.Tamanho,
                 Admin = x.Admin,
                 Conectado = x.Conectado
             }).OrderBy(x => x.Nome);
@@ -96,13 +98,14 @@ namespace api
             sala.AtualizarTimestamp();
         }
 
-        public async Task Votar(int voto)
+        public async Task Votar(int voto, string tamanho)
         {
             var dadosUsuario = GetByContext();
             var sala = dadosUsuario.Sala;
             if (!sala.EmVotacao) throw new ValidacaoException("Não está em votação");
 
             dadosUsuario.Voto = voto;
+            dadosUsuario.Tamanho = tamanho;
 
             await MandarParaTodosSala(sala);
         }

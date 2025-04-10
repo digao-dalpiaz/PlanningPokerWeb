@@ -15,6 +15,7 @@ namespace api.Models
         public bool Admin { get; set; }
 
         public int? Voto { get; set; }
+        public string Tamanho { get; set; }
 
         public bool Conectado { get; set; }
     }

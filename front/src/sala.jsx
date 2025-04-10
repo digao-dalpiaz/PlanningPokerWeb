@@ -18,6 +18,7 @@ export function Sala() {
   const [infoUser, setInfoUser] = useState();
   const [posicao, setPosicao] = useState();
   const [voto, setVoto] = useState('');
+  const [tamanho, setTamanho] = useState('');
 
   const conRef = useRef();
   const firstRun = useRef();
@@ -162,6 +163,14 @@ export function Sala() {
                 <Form.Control type="number" min="0" value={voto} onChange={ev => setVoto(ev.target.value)} />
               </Col>
               <Col>
+                <Form.Select value={tamanho} onChange={ev => setTamanho(ev.target.value)}>
+                  <option></option>
+                  <option>P</option>
+                  <option>M</option>
+                  <option>G</option>
+                </Form.Select>
+              </Col>
+              <Col>
                 <Button onClick={votar} variant="success" disabled={!posicao.emVotacao}>Votar</Button>
                 &nbsp;&nbsp;&nbsp;
                 <Button onClick={abster} variant="danger" disabled={!posicao.emVotacao}>Abster</Button>
@@ -174,9 +183,10 @@ export function Sala() {
         <Table striped hover>
           <thead>
             <tr>
-              <th width="55%">Nome</th>
-              <th width="25%">Status</th>
-              <th>Voto</th>
+              <th>Nome</th>
+              <th width="120px">Status</th>
+              <th width="100px">Voto</th>
+              <th width="50px">Tam.</th>
             </tr>
           </thead>
           <tbody>
@@ -193,6 +203,7 @@ export function Sala() {
                       <span className="text-danger"><i className="fa-solid fa-circle-exclamation" /> Não votou</span>)}
                 </td>
                 <td className="text-end">{x.voto === 0 ? <><i className="fa-solid fa-hands" /> Absteve</> : x.voto}</td>
+                <td>{x.tamanho}</td>
               </tr>)}
           </tbody>
         </Table>
@@ -214,13 +225,14 @@ export function Sala() {
       return;
     }
 
-    await call('Votar', parseInt(voto));
-    toast.info('Voto enviado: ' + voto);
+    await call('Votar', parseInt(voto), tamanho);
+    toast.info('Voto enviado: ' + voto + (tamanho ? ' / Tamanho: ' + tamanho : ''));
     setVoto('');
+    setTamanho('');
   }
 
   async function abster() {
-    await call('Votar', 0);
+    await call('Votar', 0, '');
     toast.info('Abstenção enviada');
   }
 
