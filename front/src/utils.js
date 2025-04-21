@@ -35,3 +35,10 @@ export function calcularModa(numeros) {
 
   return modas.join('/');
 }
+
+export function calcularLimites(numeros) {
+  const menor = Math.min(...numeros);
+  const maior = Math.max(...numeros);
+
+  return `${menor}<${maior} (${(menor / maior * 100).toFixed(0)}%)`
+}
