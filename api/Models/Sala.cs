@@ -71,7 +71,12 @@
             lock (_users)
             {
                 _users.RemoveAll(x => !x.Conectado);
-                _users.ForEach(x => x.Voto = null);
+                _users.ForEach(x => 
+                {
+                    x.Voto = null;
+                    x.Tamanho = null;
+                    x.Complexidade = null;
+                });
             }
         }
 

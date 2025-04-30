@@ -16,6 +16,7 @@ namespace api.Models
 
         public int? Voto { get; set; }
         public string Tamanho { get; set; }
+        public string Complexidade { get; set; }
 
         public bool Conectado { get; set; }
     }

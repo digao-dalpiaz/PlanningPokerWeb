@@ -67,6 +67,7 @@ namespace api
             public string Nome { get; set; }
             public int? Voto { get; set; }
             public string Tamanho { get; set; }
+            public string Complexidade { get; set; }
             public bool Votou { get; set; }
             public bool Admin { get; set; }
             public bool Conectado { get; set; }
@@ -82,6 +83,7 @@ namespace api
                 Votou = x.Voto != null,
                 Voto = sala.EmVotacao ? null : x.Voto,
                 Tamanho = sala.EmVotacao ? null : x.Tamanho,
+                Complexidade = sala.EmVotacao ? null : x.Complexidade,
                 Admin = x.Admin,
                 Conectado = x.Conectado
             }).OrderBy(x => x.Nome);
@@ -98,7 +100,7 @@ namespace api
             sala.AtualizarTimestamp();
         }
 
-        public async Task Votar(int voto, string tamanho)
+        public async Task Votar(int voto, string tamanho, string complexidade)
         {
             var dadosUsuario = GetByContext();
             var sala = dadosUsuario.Sala;
@@ -106,6 +108,7 @@ namespace api
 
             dadosUsuario.Voto = voto;
             dadosUsuario.Tamanho = tamanho;
+            dadosUsuario.Complexidade = complexidade;
 
             await MandarParaTodosSala(sala);
         }

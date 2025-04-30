@@ -20,6 +20,7 @@ export function Sala() {
   const [posicao, setPosicao] = useState();
   const [voto, setVoto] = useState('');
   const [tamanho, setTamanho] = useState('');
+  const [complexidade, setComplexidade] = useState('');
 
   const conRef = useRef();
   const firstRun = useRef();
@@ -172,6 +173,14 @@ export function Sala() {
                 </Form.Select>
               </Col>
               <Col>
+                <Form.Select value={complexidade} onChange={ev => setComplexidade(ev.target.value)}>
+                  <option></option>
+                  <option>Baixa</option>
+                  <option>Média</option>
+                  <option>Alta</option>
+                </Form.Select>
+              </Col>
+              <Col>
                 <Button onClick={votar} variant="success" disabled={!posicao.emVotacao}>Votar</Button>
                 &nbsp;&nbsp;&nbsp;
                 <Button onClick={abster} variant="danger" disabled={!posicao.emVotacao}>Abster</Button>
@@ -188,6 +197,7 @@ export function Sala() {
               <th width="120px">Status</th>
               <th width="100px">Voto</th>
               <th width="50px">Tam.</th>
+              <th width="70px">Cpx.</th>
             </tr>
           </thead>
           <tbody>
@@ -205,6 +215,7 @@ export function Sala() {
                 </td>
                 <td className="text-end">{x.voto === 0 ? <><i className="fa-solid fa-hands" /> Absteve</> : x.voto}</td>
                 <td>{x.tamanho}</td>
+                <td>{x.complexidade}</td>
               </tr>)}
           </tbody>
         </Table>
@@ -226,14 +237,15 @@ export function Sala() {
       return;
     }
 
-    await call('Votar', parseInt(voto), tamanho);
-    toast.info('Voto enviado: ' + voto + (tamanho ? ' / Tamanho: ' + tamanho : ''));
+    await call('Votar', parseInt(voto), tamanho, complexidade);
+    toast.info('Voto enviado: ' + voto + (tamanho ? ' / Tamanho: ' + tamanho : '') + (complexidade ? ' / Complexidade: ' + complexidade : ''));
     setVoto('');
     setTamanho('');
+    setComplexidade('');
   }
 
   async function abster() {
-    await call('Votar', 0, '');
+    await call('Votar', 0, '', '');
     toast.info('Abstenção enviada');
   }
 
