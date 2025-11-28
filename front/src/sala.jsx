@@ -162,9 +162,11 @@ export function Sala() {
 
             <Row>
               <Col>
+                Voto:
                 <Form.Control type="number" min="0" value={voto} onChange={ev => setVoto(ev.target.value)} />
               </Col>
               <Col>
+                Tamanho:
                 <Form.Select value={tamanho} onChange={ev => setTamanho(ev.target.value)}>
                   <option></option>
                   <option>P</option>
@@ -173,6 +175,7 @@ export function Sala() {
                 </Form.Select>
               </Col>
               <Col>
+                Complexidade:
                 <Form.Select value={complexidade} onChange={ev => setComplexidade(ev.target.value)}>
                   <option></option>
                   <option>Baixa</option>
@@ -181,6 +184,7 @@ export function Sala() {
                 </Form.Select>
               </Col>
               <Col>
+                <br />
                 <Button onClick={votar} variant="success" disabled={!posicao.emVotacao}>Votar</Button>
                 &nbsp;&nbsp;&nbsp;
                 <Button onClick={abster} variant="danger" disabled={!posicao.emVotacao}>Abster</Button>
