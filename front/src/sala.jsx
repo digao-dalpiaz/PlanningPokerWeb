@@ -237,7 +237,7 @@ export function Sala() {
       return;
     }
 
-    const valor = parseFloat(voto);
+    const valor = Number(parseFloat(voto).toFixed(1));
     if (valor <= 0) {
       toast.warn('Valor deve ser maior que zero');
       return;
