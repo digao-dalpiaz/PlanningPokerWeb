@@ -59,7 +59,7 @@ export default function Home() {
               <span>Descrição da sala</span>
               <InputGroup>
                 <InputGroup.Text><i className="fa-solid fa-tag" /></InputGroup.Text>
-                <Form.Control value={descricao} onChange={ev => setDescricao(ev.target.value)} maxLength={50} />
+                <Form.Control value={descricao} onChange={ev => setDescricao(ev.target.value)} maxLength="50" />
               </InputGroup>
             </>}
 
