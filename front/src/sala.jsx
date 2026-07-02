@@ -244,7 +244,7 @@ export function Sala() {
     }
 
     await call('Votar', valor, tamanho, complexidade);
-    toast.info('Voto enviado: ' + voto + (tamanho ? ' / Tamanho: ' + tamanho : '') + (complexidade ? ' / Complexidade: ' + complexidade : ''));
+    toast.info('Voto enviado: ' + valor + (tamanho ? ' / Tamanho: ' + tamanho : '') + (complexidade ? ' / Complexidade: ' + complexidade : ''));
     setVoto('');
     setTamanho('');
     setComplexidade('');
