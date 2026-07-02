@@ -16,6 +16,7 @@ export default function Home() {
   const [modo, setModo] = useState(MODO_JOIN);
   const [nome, setNome] = useState('');
   const [idSala, setIdSala] = useState(new URLSearchParams(location.search).get('idSala') ?? '');
+  const [descricao, setDescricao] = useState('');
 
   return (
     <>
@@ -43,15 +44,23 @@ export default function Home() {
             </Form.Control>
           </InputGroup>
 
-          {modo === MODO_JOIN &&
-            <>
-              <div style={{ height: 10 }} />
+          <div style={{ height: 10 }} />
 
+          {modo === MODO_JOIN ?
+            <>
               <span>Código da sala</span>
               <InputGroup>
                 <InputGroup.Text><i className="fa-solid fa-hashtag" /></InputGroup.Text>
                 <Form.Control value={idSala} onChange={ev => setIdSala(ev.target.value)} />
               </InputGroup>
+            </>
+            :
+            <>
+              <span>Descrição da sala</span>
+              <InputGroup>
+                <InputGroup.Text><i className="fa-solid fa-tag" /></InputGroup.Text>
+                <Form.Control value={descricao} onChange={ev => setDescricao(ev.target.value)} maxLength={50} />
+              </InputGroup>F
             </>}
 
           <div style={{ height: 20 }} />
@@ -67,6 +76,7 @@ export default function Home() {
   async function go() {
     const xNome = nome.trim();
     const xIdSala = idSala.trim();
+    const xDescricao = descricao.trim();
 
     if (!xNome) {
       toast.warn('Especifique seu nome');
@@ -98,7 +108,8 @@ export default function Home() {
     try {
       dadosIngresso = (await api.post('geral/ingressar', {
         nome: xNome,
-        idSala: modo === MODO_JOIN ? xIdSala : null
+        idSala: modo === MODO_JOIN ? xIdSala : null,
+        descricao: modo === MODO_JOIN ? null : xDescricao
       })).data;
     } finally {
       setEntrando(false);
@@ -112,7 +123,8 @@ export default function Home() {
     navigate("/sala", {
       state: {
         idSala: dadosIngresso.idSala,
-        token: dadosIngresso.token
+        token: dadosIngresso.token,
+        descricao: dadosIngresso.descricao
       }
     });
   }

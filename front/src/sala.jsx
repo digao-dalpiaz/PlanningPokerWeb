@@ -125,6 +125,8 @@ export function Sala() {
                 <>
                   <i className="fa-solid fa-layer-group" /> Sala: {cred.idSala}
                   &nbsp;<Button size="sm" variant="light" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button>
+                  <br />
+                  <span style={{color: 'purple'}}>{cred.descricao}</span>
                 </>}
             </td>
             <td align="right">

@@ -10,15 +10,17 @@
         private readonly object _tsLock = new();
         private DateTime _ultimoUso;
 
-        public Sala()
+        public Sala(string descricao)
         {
             Id = Guid.NewGuid().ToString();
+            Descricao = descricao;
             _users = [];
             _ultimoUso = DateTime.Now;
             _timer = new(TimerCallback, null, INTERVALO, INTERVALO);
         }
 
         public string Id { get; }
+        public string Descricao { get; }
         public bool EmVotacao { get; set; }
         public List<DadosUser> Users { get { lock(_users) return _users.ToList(); } }
         public DateTime UltimoUso { get => _ultimoUso; }

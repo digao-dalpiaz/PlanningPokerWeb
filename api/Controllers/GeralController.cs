@@ -46,11 +46,13 @@ namespace api.Controllers
         {
             public string Nome { get; set; }
             public string IdSala { get; set; }
+            public string Descricao { get; set; }
         }
         public class ResponseIngresso
         {
             public string IdSala { get; set; }
             public string Token { get; set; }
+            public string Descricao { get; set; }
         }
         [HttpPost("ingressar")]
         public async Task<ResponseIngresso> Ingressar(RequestIngresso request)
@@ -60,7 +62,7 @@ namespace api.Controllers
             Sala sala;
             if (modoCreate)
             {
-                sala = new();
+                sala = new(request.Descricao);
                 if (!Global.Salas.TryAdd(sala.Id, sala))
                 {
                     throw new Exception("Criada sala que já existia");
@@ -87,6 +89,7 @@ namespace api.Controllers
 
                 response.Token = user.Token;
                 response.IdSala = sala.Id;
+                response.Descricao = sala.Descricao;
 
                 await DbService.Gravar(HttpContext, modoCreate, sala.Id, user.Nome);
             }
