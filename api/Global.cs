@@ -6,7 +6,7 @@ namespace api
     public class Global
     {
 
-        public const string VERSAO = "1.2";
+        public const string VERSAO = "1.3";
         public const string URL_FRONTEND = "https://poker.digaodalpiaz.com";
 
         public static readonly ConcurrentDictionary<string, Sala> Salas = new();
