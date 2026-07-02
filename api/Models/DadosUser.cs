@@ -14,7 +14,7 @@ namespace api.Models
         public Sala Sala { get; set; }
         public bool Admin { get; set; }
 
-        public int? Voto { get; set; }
+        public decimal? Voto { get; set; }
         public string Tamanho { get; set; }
         public string Complexidade { get; set; }
 

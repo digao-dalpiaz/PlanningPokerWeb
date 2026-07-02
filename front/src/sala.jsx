@@ -237,13 +237,13 @@ export function Sala() {
       return;
     }
 
-    const valor = parseInt(voto);
+    const valor = parseFloat(voto);
     if (valor <= 0) {
       toast.warn('Valor deve ser maior que zero');
       return;
     }
 
-    await call('Votar', parseInt(voto), tamanho, complexidade);
+    await call('Votar', valor, tamanho, complexidade);
     toast.info('Voto enviado: ' + voto + (tamanho ? ' / Tamanho: ' + tamanho : '') + (complexidade ? ' / Complexidade: ' + complexidade : ''));
     setVoto('');
     setTamanho('');

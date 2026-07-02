@@ -65,7 +65,7 @@ namespace api
         {
             public Guid Uuid { get; set; }
             public string Nome { get; set; }
-            public int? Voto { get; set; }
+            public decimal? Voto { get; set; }
             public string Tamanho { get; set; }
             public string Complexidade { get; set; }
             public bool Votou { get; set; }
@@ -100,7 +100,7 @@ namespace api
             sala.AtualizarTimestamp();
         }
 
-        public async Task Votar(int voto, string tamanho, string complexidade)
+        public async Task Votar(decimal voto, string tamanho, string complexidade)
         {
             var dadosUsuario = GetByContext();
             var sala = dadosUsuario.Sala;
