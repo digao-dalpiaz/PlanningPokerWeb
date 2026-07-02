@@ -267,7 +267,7 @@ export function Sala() {
         <b>Votos:</b> {numeros.length}
         {numeros.length > 0 && <>&nbsp;&nbsp;&nbsp;
           <b>Média:</b> {calcularMedia(numeros).toFixed(1)}&nbsp;&nbsp;&nbsp;
-          <b>Mediana:</b> {calcularMediana(numeros)}&nbsp;&nbsp;&nbsp;
+          <b>Mediana:</b> {calcularMediana(numeros).toFixed(1)}&nbsp;&nbsp;&nbsp;
           <b>Moda:</b> {calcularModa(numeros)}&nbsp;&nbsp;&nbsp;
           <b>Limites:</b> {calcularLimites(numeros)}
         </>}
