@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useLocation, useNavigate } from "react-router";
 import { api } from "./request";
 
+const MODO_NEW = 'N';
 const MODO_JOIN = 'J';
 
 export default function Home() {
@@ -21,37 +22,33 @@ export default function Home() {
   return (
     <>
       <Card>
-        <Card.Header>Criar ou juntar-se a uma sala</Card.Header>
+        <Card.Header>😊 Bem-vindo :: Crie ou junte-se a uma sala</Card.Header>
         <Card.Body>
 
           <span>Seu nome</span>
-          <InputGroup>
+          <InputGroup style={{ width: '400px' }}>
             <InputGroup.Text><i className="fa-solid fa-user" /></InputGroup.Text>
-            <Form.Control value={nome} onChange={ev => setNome(ev.target.value)} maxLength="50" />
+            <Form.Control value={nome} onChange={ev => setNome(ev.target.value)} maxLength="50"
+              placeholder="Digão" />
           </InputGroup>
 
           <div style={{ height: 10 }} />
 
           <span>Modo</span>
-          <InputGroup>
-            <InputGroup.Text><i className="fa-solid fa-sliders" /></InputGroup.Text>
-            <Form.Control as="select"
-              value={modo}
-              onChange={ev => setModo(ev.target.value)}
-            >
-              <option value="N">Criar nova sala</option>
-              <option value="J">Entrar em sala existente</option>
-            </Form.Control>
-          </InputGroup>
+          <Form.Check type="radio" id="modoN" label="Criar nova sala"
+            checked={modo === MODO_NEW} onChange={() => setModo(MODO_NEW)} />
+          <Form.Check type="radio" id="modoJ" label="Entrar em sala existente"
+            checked={modo === MODO_JOIN} onChange={() => setModo(MODO_JOIN)} />
 
           <div style={{ height: 10 }} />
 
           {modo === MODO_JOIN ?
             <>
               <span>Código da sala</span>
-              <InputGroup>
+              <InputGroup style={{ width: '250px' }}>
                 <InputGroup.Text><i className="fa-solid fa-hashtag" /></InputGroup.Text>
-                <Form.Control value={idSala} onChange={ev => setIdSala(ev.target.value)} />
+                <Form.Control value={idSala} onChange={ev => setIdSala(ev.target.value)} maxLength="14"
+                  placeholder="AAAA-AAAA-AAAA" />
               </InputGroup>
             </>
             :
@@ -59,13 +56,15 @@ export default function Home() {
               <span>Descrição da sala</span>
               <InputGroup>
                 <InputGroup.Text><i className="fa-solid fa-tag" /></InputGroup.Text>
-                <Form.Control value={descricao} onChange={ev => setDescricao(ev.target.value)} maxLength="50" />
+                <Form.Control value={descricao} onChange={ev => setDescricao(ev.target.value)} maxLength="50"
+                  placeholder="Sprint 123 - Task 456 - Refatoração Cadastros" />
               </InputGroup>
             </>}
 
           <div style={{ height: 20 }} />
 
-          <Button disabled={entrando} onClick={go}><i className="fa-solid fa-right-to-bracket" /> Entrar</Button>
+          <Button disabled={entrando} onClick={go}>
+            <i className="fa-solid fa-right-to-bracket" /> {modo === MODO_JOIN ? 'Entrar' : 'Criar'}</Button>
           &nbsp;{entrando && <Spinner size="sm" />}
 
         </Card.Body>
@@ -89,7 +88,7 @@ export default function Home() {
         return;
       }
 
-      if (xIdSala.length !== 36) {
+      if (xIdSala.length !== 14) {
         toast.warn('Código da sala com formato inválido');
         return;
       }

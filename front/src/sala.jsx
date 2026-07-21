@@ -124,9 +124,9 @@ export function Sala() {
               {cred &&
                 <>
                   <i className="fa-solid fa-layer-group" /> Sala: {cred.idSala}
-                  &nbsp;<Button size="sm" variant="light" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button>
+                  &nbsp;<Button size="sm" variant="link" title="Compartilhar" onClick={shareSala}><i className="fa-solid fa-share-nodes" /></Button>
                   <br />
-                  <span style={{color: 'purple'}}>{cred.descricao}</span>
+                  <span style={{ color: '#9555a7' }}>{cred.descricao}</span>
                 </>}
             </td>
             <td align="right">
@@ -158,7 +158,7 @@ export function Sala() {
           </Card.Body>
         </Card>
 
-        <Card style={{ backgroundColor: posicao.emVotacao ? '#b1e0f3' : '' }}>
+        <Card style={{ backgroundColor: posicao.emVotacao ? '#1a4a5b' : '' }}>
           <Card.Header><i className="fa-solid fa-head-side-virus" /> Voto {posicao.emVotacao ? <span> :: <b>VOTAÇÃO EM ANDAMENTO</b></span> : null}</Card.Header>
           <Card.Body>
 
@@ -196,7 +196,14 @@ export function Sala() {
           </Card.Body>
         </Card>
 
-        <Table striped hover>
+        <Table striped hover style={{
+          marginTop: 10,
+          borderCollapse: 'separate',
+          borderSpacing: 0,
+          border: '1px solid #414141',
+          borderRadius: '6px',
+          overflow: 'hidden'
+        }}>
           <thead>
             <tr>
               <th>Nome</th>
@@ -208,8 +215,9 @@ export function Sala() {
           </thead>
           <tbody>
             {posicao.users.map(x =>
-              <tr key={x.uuid} className={x.uuid === infoUser.uuid ? 'table-warning' : ''}>
-                <td><i className="fa-solid fa-user" /> {x.nome} {x.admin && <Badge>ADMIN</Badge>} {!x.conectado && <i className="fa-solid fa-ban" />}</td>
+              <tr key={x.uuid}>
+                <td><i className="fa-solid fa-user"
+                 style={{color: x.uuid === infoUser.uuid ? '#c1672b' : ''}} /> {x.nome} {x.admin && <Badge>ADMIN</Badge>} {!x.conectado && <i className="fa-solid fa-ban" />}</td>
                 <td>
                   {x.votou ?
                     <span className="text-success"><i className="fa-solid fa-thumbs-up" /> Votou</span>

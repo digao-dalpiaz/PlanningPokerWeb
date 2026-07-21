@@ -12,7 +12,7 @@
 
         public Sala(string descricao)
         {
-            Id = Guid.NewGuid().ToString();
+            Id = RandomId.GerarIdSala();
             Descricao = descricao;
             _users = [];
             _ultimoUso = DateTime.Now;
